@@ -1,0 +1,24 @@
+<resources>
+
+    <declare-styleable name="mrb_RangeBar">
+        <attr name="mrb_tickStart" format="float"/>
+        <attr name="mrb_tickEnd" format="float"/>
+        <attr name="mrb_tickInterval" format="float"/>
+        <attr name="mrb_tickHeight" format="dimension" />
+        <attr name="mrb_tickColor" format="color"/>
+        <attr name="mrb_barWeight" format="dimension" />
+        <attr name="mrb_barColor" format="reference|color" />
+        <attr name="mrb_textColor" format="reference|color" />
+        <attr name="mrb_pinColor" format="reference|color" />
+        <attr name="mrb_selectorSize" format="dimension" />
+        <attr name="mrb_pinPadding" format="dimension" />
+        <attr name="mrb_barPaddingBottom" format="dimension" />
+        <attr name="mrb_selectorColor" format="reference|color" />
+        <attr name="mrb_rangeBar" format="boolean" />
+        <attr name="mrb_connectingLineWeight" format="dimension" />
+        <attr name="mrb_connectingLineColor" format="reference|color" />
+        <attr name="mrb_pinRadius" format="dimension" />
+        <attr name="mrb_pin_text" format="boolean" />
+    </declare-styleable>
+
+</resources>

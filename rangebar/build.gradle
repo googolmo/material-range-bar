@@ -1,51 +1,97 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
-apply plugin: 'signing'
-apply from: '../maven_push.gradle'
+plugins {
+    id "com.jfrog.bintray" version "1.0"
+}
 
-version = "1.0"
-group = "com.appyvet"
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+version = project.VERSION_NAME
+group = project.GROUP
 
 android {
 
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion Integer.parseInt(project.COMPILE_SDK_VERSION)
+    buildToolsVersion project.BUILD_TOOLS_VERSION
+    resourcePrefix "mrb_"
 
     defaultConfig {
-        minSdkVersion 12
-        targetSdkVersion 21
+        minSdkVersion Integer.parseInt(project.MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(project.TARGET_SDK_VERSION)
+        versionName project.VERSION_NAME
+        versionCode Integer.parseInt(project.VERSION_CODE)
     }
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            res.srcDirs = ['res']
+
+}
+
+install {
+    repositories.mavenInstaller{
+        pom {
+            project {
+                packaging POM_PACKAGING
+                name POM_DESCRIPTION
+                url POM_URL
+
+                licenses {
+                    license {
+                        name POM_LICENCE_NAME
+                        url POM_LICENCE_URL
+                        distribution POM_LICENCE_DIST
+                    }
+                }
+
+                developers {
+                    developer {
+                        id POM_DEVELOPER_ID
+                        name POM_DEVELOPER_NAME
+                    }
+                }
+
+                scm {
+                  url POM_SCM_URL
+                    connection POM_SCM_CONNECTION
+                    developerConnection POM_SCM_DEV_CONNECTION
+                }
+
+            }
         }
     }
 }
 
-repositories {
-    mavenCentral()
+task sourcesJar(type: Jar) {
+  from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
 }
 
-//signing {
-//    required { has("release") && gradle.taskGraph.hasTask("uploadArchives") }
-//    sign configurations.archives
-//}
-
-task publishLocal(type: Upload) {
-    configuration = configurations.archives
-    repositories.mavenDeployer {
-        repository(url: "file://$buildDir/repo")
-    }
-
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-    }
-
-    task generateJavadocs(type: Javadoc) {
-        source = android.sourceSets.main.java.srcDirs
-    }
+task javadoc(type: Javadoc) {
+  source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+  classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+  archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    user = project.getProperty("bintray.user")
+    key = project.getProperty("bintray.key")
+
+    configurations = ['archives']
+
+    pkg {
+        repo = "maven"
+        name = "material_range_bar"
+        websiteUrl = POM_URL
+        vcsUrl = POM_URL
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+
+}
+
+apply from: 'https://raw.github.com/googolmo/gradle-mvn-push/master/gradle-mvn-push.gradle'
