@@ -90,6 +90,19 @@ bintray {
         vcsUrl = POM_URL
         licenses = ["Apache-2.0"]
         publish = true
+        version {
+            gpg {
+                sign = true
+                passphrase = project.getProperty("bintray.gpg.password")
+            }
+            mavenCentralSync {
+                sync = true
+                user = project.getProperty("bintray.oss.user")
+                password = project.getProperty("bintray.oss.password")
+                close = '1'
+            }
+
+        }
     }
 
 }
